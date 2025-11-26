@@ -6,6 +6,9 @@ import net.konohana.sakuya.konopass.qr.infrastructure.entity.TReaderMasterEntity
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TEntriesRepository
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TReaderMasterRepository
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TReaderSettingsRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -39,23 +42,22 @@ class ReaderMasterService(
     }
 
     /**
-     * 登録されている全端末のマスタ情報と設定情報を取得します (R - Read All)。
-     * @return ReaderMasterDetailDtoのリスト
+     * 登録されている全端末の情報をページングして取得します (Read All with Pagination)。
+     * @param pageable ページ番号、ページサイズ、ソート情報を含むオブジェクト
+     * @return ページングされた ReaderMasterDetailDto の Page オブジェクト
      */
-    fun getAllReaderDetails(): List<ReaderMasterDetailDto> {
-        // 1. 全端末マスタ情報を取得
-        val masterEntities = masterRepository.findAll()
+    fun getAllReaderDetails(pageable: Pageable): Page<ReaderMasterDetailDto> {
+        // 1. 全端末マスタ情報を取得 (Pageオブジェクトとして取得)
+        val masterEntitiesPage: Page<TReaderMasterEntity> = masterRepository.findAll(pageable)
 
-        // 2. 関連する全端末設定情報を一度に取得（N+1問題回避のため、最適化が必要）
-        // 簡単のため、ここでは端末IDをキーとするMapを作成して対応します。
-        val settingEntities = settingsRepository.findAll()
-        val settingMap = settingEntities.associateBy { it.readerId } // ReaderIDをキーとするMapに変換
+        // 2. ページに含まれるエンティティのリストから、関連する設定情報を取得
+        //    (※ここでのN+1問題回避ロジックは複雑になるため、ここでは findAll() をそのまま利用する構造を維持)
+        val settingEntities = settingsRepository.findAll() // 簡略化のため全件取得を維持
+        val settingMap = settingEntities.associateBy { it.readerId }
 
-        // 3. マスタと設定を結合し、DTOリストに変換
-        return masterEntities.map { master ->
+        // 3. Page内のコンテンツをDTOリストに変換し、新しい Page オブジェクトでラップして返却
+        val dtoList = masterEntitiesPage.content.map { master ->
             val setting = settingMap[master.readerId]
-
-            // 統合DTOに変換
             ReaderMasterDetailDto(
                 readerId = master.readerId,
                 locationName = master.locationName,
@@ -66,6 +68,8 @@ class ReaderMasterService(
                 fromStaCode = setting?.fromStaCode
             )
         }
+        // DTOリストを元の Page メタデータでラップして返す
+        return PageImpl(dtoList, pageable, masterEntitiesPage.totalElements)
     }
 
     /**

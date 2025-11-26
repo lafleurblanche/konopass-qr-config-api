@@ -39,6 +39,36 @@ class ReaderMasterService(
     }
 
     /**
+     * 登録されている全端末のマスタ情報と設定情報を取得します (R - Read All)。
+     * @return ReaderMasterDetailDtoのリスト
+     */
+    fun getAllReaderDetails(): List<ReaderMasterDetailDto> {
+        // 1. 全端末マスタ情報を取得
+        val masterEntities = masterRepository.findAll()
+
+        // 2. 関連する全端末設定情報を一度に取得（N+1問題回避のため、最適化が必要）
+        // 簡単のため、ここでは端末IDをキーとするMapを作成して対応します。
+        val settingEntities = settingsRepository.findAll()
+        val settingMap = settingEntities.associateBy { it.readerId } // ReaderIDをキーとするMapに変換
+
+        // 3. マスタと設定を結合し、DTOリストに変換
+        return masterEntities.map { master ->
+            val setting = settingMap[master.readerId]
+
+            // 統合DTOに変換
+            ReaderMasterDetailDto(
+                readerId = master.readerId,
+                locationName = master.locationName,
+                isActive = master.isActive,
+                updatedAt = master.updatedAt,
+                // 設定情報が存在しない場合はデフォルト値を使用
+                mode = setting?.mode ?: "未設定",
+                fromStaCode = setting?.fromStaCode
+            )
+        }
+    }
+
+    /**
      * 新しい端末マスタを登録します (C)。
      */
     @Transactional
@@ -90,25 +120,28 @@ class ReaderMasterService(
 
     /**
      * 端末を物理削除します (D)。関連テーブルに使用記録がない場合にのみ許可されます。
+     * ★ メソッド名を hardDeleteReaderMaster に修正
      */
     @Transactional
     fun hardDeleteReaderMaster(readerId: String) {
-        // 1. 使用状況チェック (最も重要)
-        // 端末設定情報が残っていないか？
+
+        // 1. 使用状況チェック
         if (settingsRepository.existsByReaderId(readerId)) {
             throw IllegalStateException("端末ID '$readerId' の端末設定情報が残存しているため、削除できません。")
         }
+        // 🚨 TEntriesRepositoryのチェックもここに含める
 
-        // 🚨 重要なチェック: 入場記録テーブルにこの端末IDが記録されていないか確認
-        // TEntriesRepositoryに findByToStaCode(exitStaCode) のような検索メソッドが必要です。
-        // if (entriesRepository.existsByReaderId(readerId)) {
-        //     throw IllegalStateException("端末ID '$readerId' は入場記録（TEntries）で使用されているため、削除できません。")
-        // }
+        // 2. 端末設定テーブルの削除
+        val settingEntity = settingsRepository.findByReaderId(readerId)
+        if (settingEntity != null) {
+            settingsRepository.delete(settingEntity)
+        }
 
-        // 2. 物理削除の実行
-        val masterEntity = masterRepository.findByReaderId(readerId)
-            ?: throw NoSuchElementException("端末ID '$readerId' のマスタ情報が見つかりません。")
+        // 3. マスタの物理削除の実行
+        val deletedCount = masterRepository.deleteByReaderId(readerId)
 
-        masterRepository.delete(masterEntity)
+        if (deletedCount == 0) {
+            throw NoSuchElementException("端末ID '$readerId' のマスタ情報が見つかりません。")
+        }
     }
 }

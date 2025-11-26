@@ -57,12 +57,28 @@ class ReaderMasterController(
     @DeleteMapping("/{readerId}")
     fun deleteReaderMaster(@PathVariable readerId: String): ResponseEntity<*> {
         return try {
-            masterService.deleteReaderMaster(readerId)
+            // hardDeleteReaderMaster を呼び出す
+            masterService.hardDeleteReaderMaster(readerId)
             ResponseEntity.ok(mapOf("message" to "端末ID '$readerId' の削除を試行しました。"))
         } catch (e: NoSuchElementException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "端末マスタ情報が見つかりません。"))
         } catch (e: IllegalStateException) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("error" to e.message))
+        }
+    }
+
+    /**
+     * 4. 登録されている全端末の情報を一覧で取得します (R - Read All)
+     * GET /api/v1/master/reader
+     */
+    @GetMapping
+    fun getAllReaderDetails(): ResponseEntity<*> {
+        return try {
+            val detailsList = masterService.getAllReaderDetails()
+            ResponseEntity.ok(detailsList)
+        } catch (e: Exception) {
+            // データ取得に関する一般的なエラー処理
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("error" to "端末一覧取得中にエラーが発生しました。"))
         }
     }
 }

@@ -2,6 +2,7 @@ package net.konohana.sakuya.konopass.qr.controller
 
 import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderMasterCreateRequest
 import net.konohana.sakuya.konopass.qr.service.master.ReaderMasterService
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -68,16 +69,16 @@ class ReaderMasterController(
     }
 
     /**
-     * 4. 登録されている全端末の情報を一覧で取得します (R - Read All)
-     * GET /api/v1/master/reader
+     * 4. 登録されている全端末の情報をページング付きで取得します (Read All with Pagination)
+     * GET /api/v1/master/reader?page=0&size=10&sort=readerId,asc
      */
     @GetMapping
-    fun getAllReaderDetails(): ResponseEntity<*> {
+    fun getAllReaderDetails(pageable: Pageable): ResponseEntity<*> { // ★ Pageableを引数として受け取る
         return try {
-            val detailsList = masterService.getAllReaderDetails()
-            ResponseEntity.ok(detailsList)
+            val detailsPage = masterService.getAllReaderDetails(pageable)
+            // Pageオブジェクトをそのまま返すと、メタデータ（totalElements, totalPagesなど）がJSONに含まれる
+            ResponseEntity.ok(detailsPage)
         } catch (e: Exception) {
-            // データ取得に関する一般的なエラー処理
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("error" to "端末一覧取得中にエラーが発生しました。"))
         }
     }

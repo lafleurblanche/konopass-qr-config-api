@@ -31,6 +31,11 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+	// Mockk (モックライブラリ)
+	testImplementation("io.mockk:mockk:1.13.8")
+	// Coroutineテストユーティリティ
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
 	// ★ Actuator (ヘルスチェック) モジュールの追加
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 }

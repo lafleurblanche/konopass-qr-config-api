@@ -38,6 +38,15 @@ dependencies {
 
 	// ★ Actuator (ヘルスチェック) モジュールの追加
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+	// 1. Spring Security 本体
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	// 2. JWT 操作用ライブラリ (JJWT)
+	val jjwtVersion = "0.12.5"
+	implementation("io.jsonwebtoken:jjwt-api:$jjwtVersion")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jjwtVersion")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jjwtVersion") // JSON処理用
 }
 
 kotlin {

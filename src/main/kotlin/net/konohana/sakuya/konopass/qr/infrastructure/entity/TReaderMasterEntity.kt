@@ -2,6 +2,8 @@ package net.konohana.sakuya.konopass.qr.infrastructure.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDateTime
@@ -13,8 +15,9 @@ import java.time.LocalDateTime
 @Table(name = "t_reader_master")
 data class TReaderMasterEntity(
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    val id: Int = 0,
+    val id: Int? = null,
 
     @Column(name = "reader_id", unique = true)
     val readerId: String,

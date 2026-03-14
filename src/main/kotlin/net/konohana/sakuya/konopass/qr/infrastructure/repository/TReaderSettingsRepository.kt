@@ -10,6 +10,5 @@ interface TReaderSettingsRepository : JpaRepository<TReaderSettingsEntity, Int> 
      */
     fun findByReaderId(readerId: String): TReaderSettingsEntity?
 
-    // ★ 新規実装: 指定された readerId を持つレコードが存在するか確認します。
     fun existsByReaderId(readerId: String): Boolean
 }

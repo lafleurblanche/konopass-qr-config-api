@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 data class QrMappingEntity(
     @Id
     @Column(name = "id")
-    val id: Int = 0, // 主キー
+    val id: Int = 0,
 
     @Column(name = "qr_id")
     val qrId: String,

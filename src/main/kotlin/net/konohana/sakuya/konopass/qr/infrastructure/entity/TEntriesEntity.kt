@@ -32,7 +32,7 @@ data class TEntriesEntity(
     val areaType: String,
 
     @Column(name = "exit_date")
-    val exitDate: LocalDateTime?, // Nullable
+    val exitDate: LocalDateTime?,
 
     @Column(name = "status")
     val status: String, // IN_USE, COMPLETED などの状態

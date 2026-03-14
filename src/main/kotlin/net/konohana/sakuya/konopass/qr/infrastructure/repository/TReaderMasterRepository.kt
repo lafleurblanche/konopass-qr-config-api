@@ -9,15 +9,12 @@ import org.springframework.transaction.annotation.Transactional
 
 interface TReaderMasterRepository : JpaRepository<TReaderMasterEntity, Int> {
 
-    // findByReaderId は、エンティティの readerId プロパティを参照します。
     fun findByReaderId(readerId: String): TReaderMasterEntity?
 
-    // existsByReaderId も同様に readerId プロパティを参照します。
     fun existsByReaderId(readerId: String): Boolean
 
-    // ★ 新規実装: 端末IDをキーとして物理削除するカスタムメソッド
-    @Modifying // データ変更クエリであることを示す
-    @Transactional // トランザクションを保証
+    @Modifying
+    @Transactional
     @Query("DELETE FROM TReaderMasterEntity t WHERE t.readerId = :readerId")
     fun deleteByReaderId(@Param("readerId") readerId: String): Int
 }

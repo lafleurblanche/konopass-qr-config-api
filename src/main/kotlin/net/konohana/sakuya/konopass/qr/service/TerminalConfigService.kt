@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TerminalConfigService(
-    private val settingsRepository: TReaderSettingsRepository // ReaderSettingsテーブルのリポジトリ
+    private val settingsRepository: TReaderSettingsRepository
 ) {
     // 必須ではないが、更新操作には @Transactional を付与する
     @Transactional

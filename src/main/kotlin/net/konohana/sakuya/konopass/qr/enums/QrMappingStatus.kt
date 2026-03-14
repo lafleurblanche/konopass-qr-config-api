@@ -15,8 +15,6 @@ enum class QrMappingStatus(
     /** 利用済（入場・出場完了） */
     USED("利用済"),
 
-    // --- 追加ステータス ---
-
     /** 期限切れ */
     EXPIRED("期限切れ"),
 
@@ -26,7 +24,6 @@ enum class QrMappingStatus(
     /** 利用停止（不正利用やシステムロック） */
     LOCKED("利用停止");
 
-    // ... (ファクトリメソッドはそのまま) ...
     companion object {
         /**
          * 指定された表示名（日本語）に一致する[QrMappingStatus]を返します。

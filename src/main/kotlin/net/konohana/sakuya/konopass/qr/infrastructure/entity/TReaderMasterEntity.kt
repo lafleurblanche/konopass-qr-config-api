@@ -10,27 +10,27 @@ import java.time.LocalDateTime
  * 端末の詳細マスタテーブル (t_reader_master) のJPA Entity。
  */
 @Entity
-@Table(name = "t_reader_master") // ★ テーブル名を小文字に修正
+@Table(name = "t_reader_master")
 data class TReaderMasterEntity(
     @Id
     @Column(name = "id")
     val id: Int = 0,
 
-    @Column(name = "reader_id", unique = true) // ★ カラム名は小文字スネークケース
+    @Column(name = "reader_id", unique = true)
     val readerId: String,
 
-    @Column(name = "location_name") // ★ 小文字スネークケース
+    @Column(name = "location_name")
     val locationName: String,
 
-    @Column(name = "is_active") // ★ 小文字スネークケース
+    @Column(name = "is_active")
     val isActive: Boolean,
 
-    @Column(name = "registered_by") // ★ 小文字スネークケース
+    @Column(name = "registered_by")
     val registeredBy: String?,
 
-    @Column(name = "created_at") // ★ 小文字スネークケース
+    @Column(name = "created_at")
     val createdAt: LocalDateTime,
 
-    @Column(name = "updated_at") // ★ 小文字スネークケース
+    @Column(name = "updated_at")
     val updatedAt: LocalDateTime
 )

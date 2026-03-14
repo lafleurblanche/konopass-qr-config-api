@@ -148,4 +148,42 @@ class ReaderMasterService(
             throw NoSuchElementException("端末ID '$readerId' のマスタ情報が見つかりません。")
         }
     }
+
+    /**
+     * 管理者権限：端末マスタ情報と設定情報を一括更新します (U)。
+     * 設置場所、動作モード、有効フラグを更新対象とします。
+     */
+    @Transactional
+    fun updateReaderMaster(
+        readerId: String,
+        locationName: String,
+        mode: String,
+        isActive: Boolean
+    ): ReaderMasterDetailDto {
+        // 1. マスタ情報の取得と更新
+        val masterEntity = masterRepository.findByReaderId(readerId)
+            ?: throw NoSuchElementException("端末ID '$readerId' のマスタ情報が見つかりません。")
+
+        val updatedMaster = masterEntity.copy(
+            locationName = locationName,
+            isActive = isActive,
+            updatedAt = LocalDateTime.now()
+        )
+        masterRepository.save(updatedMaster)
+
+        // 2. 設定情報の取得と更新 (モードの更新)
+        val settingEntity = settingsRepository.findByReaderId(readerId)
+        if (settingEntity != null) {
+            val updatedSetting = settingEntity.copy(
+                mode = mode
+            )
+            settingsRepository.save(updatedSetting)
+        } else {
+            // もし設定レコードが存在しない場合、新規作成するなどのフォールバックが必要ならここに記述
+            // 今回は既存の更新に注力するため、存在する場合のみ更新としています
+        }
+
+        // 3. 最新の状態を統合DTOとして返却
+        return getReaderDetails(readerId)
+    }
 }

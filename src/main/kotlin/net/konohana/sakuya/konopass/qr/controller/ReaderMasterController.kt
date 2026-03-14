@@ -1,6 +1,7 @@
 package net.konohana.sakuya.konopass.qr.controller
 
 import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderMasterCreateRequest
+import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderMasterUpdateRequest
 import net.konohana.sakuya.konopass.qr.service.master.ReaderMasterService
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -80,6 +82,30 @@ class ReaderMasterController(
             ResponseEntity.ok(detailsPage)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("error" to "端末一覧取得中にエラーが発生しました。"))
+        }
+    }
+
+    /**
+     * 5. 端末マスタ情報の更新 (U)
+     * PUT /api/v1/master/reader/{readerId}
+     */
+    @PutMapping("/{readerId}")
+    fun updateReaderMaster(
+        @PathVariable readerId: String,
+        @RequestBody request: ReaderMasterUpdateRequest
+    ): ResponseEntity<*> {
+        return try {
+            val updatedDetails = masterService.updateReaderMaster(
+                readerId = readerId,
+                locationName = request.locationName,
+                mode = request.mode,
+                isActive = request.isActive
+            )
+            ResponseEntity.ok(updatedDetails)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(mapOf("error" to "更新中にエラーが発生しました。"))
         }
     }
 }

@@ -2,6 +2,8 @@ package net.konohana.sakuya.konopass.qr.infrastructure.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
@@ -9,8 +11,9 @@ import jakarta.persistence.Table
 @Table(name = "t_reader_settings")
 data class TReaderSettingsEntity(
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ★ 自動採番を有効化
     @Column(name = "id")
-    val id: Int = 0,
+    val id: Int? = null,
 
     @Column(name = "reader_id")
     val readerId: String,

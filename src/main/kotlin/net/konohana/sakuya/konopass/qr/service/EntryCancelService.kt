@@ -33,8 +33,6 @@ class EntryCancelService(
         val statusUpdateSuccess = ticketUpdateService.updateStatusToValidOnCancel(qrId)
 
         if (!statusUpdateSuccess) {
-            // ステータス更新が失敗した場合、強制的にトランザクションをロールバックさせる
-            // 🚨 重要: この例外により、上記の entriesRepository.delete も取り消されます
             throw IllegalStateException("チケットステータス更新失敗。データ不整合防止のためロールバックします。")
         }
 

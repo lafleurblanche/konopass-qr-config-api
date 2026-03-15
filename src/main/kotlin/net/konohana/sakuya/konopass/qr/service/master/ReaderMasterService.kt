@@ -3,6 +3,7 @@ package net.konohana.sakuya.konopass.qr.service.master
 import jakarta.transaction.Transactional
 import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderMasterDetailDto
 import net.konohana.sakuya.konopass.qr.infrastructure.entity.TReaderMasterEntity
+import net.konohana.sakuya.konopass.qr.infrastructure.entity.TReaderSettingsEntity
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TEntriesRepository
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TReaderMasterRepository
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TReaderSettingsRepository
@@ -85,14 +86,21 @@ class ReaderMasterService(
         val newEntity = TReaderMasterEntity(
             readerId = readerId,
             locationName = locationName,
-            isActive = true, // デフォルトでアクティブ
+            isActive = true,
             registeredBy = registeredBy,
             createdAt = now,
             updatedAt = now
         )
         val savedEntity = masterRepository.save(newEntity)
 
-        // 設定テーブル (TReaderSettings) が存在しない場合、ここで新規登録するロジックが必要となるが、ここでは省略
+        val initialSettings = TReaderSettingsEntity(
+            readerId = readerId,
+            mode = "ENTRY",      // 初期モードをENTRYに固定
+            fromStaCode = "0000", // デフォルト値
+            toStaCode = "0000",
+            sectorKbn = "1"
+        )
+        settingsRepository.save(initialSettings)
 
         return getReaderDetails(savedEntity.readerId)
     }

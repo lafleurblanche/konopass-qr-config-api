@@ -75,7 +75,7 @@ class ReaderMasterController(
      * GET /api/v1/master/reader?page=0&size=10&sort=readerId,asc
      */
     @GetMapping
-    fun getAllReaderDetails(pageable: Pageable): ResponseEntity<*> { // ★ Pageableを引数として受け取る
+    fun getAllReaderDetails(pageable: Pageable): ResponseEntity<*> {
         return try {
             val detailsPage = masterService.getAllReaderDetails(pageable)
             // Pageオブジェクトをそのまま返すと、メタデータ（totalElements, totalPagesなど）がJSONに含まれる

@@ -11,7 +11,7 @@ import jakarta.persistence.Table
 @Table(name = "t_reader_settings")
 data class TReaderSettingsEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ★ 自動採番を有効化
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Int? = null,
 

@@ -2,6 +2,7 @@ package net.konohana.sakuya.konopass.qr.service.master
 
 import jakarta.transaction.Transactional
 import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderMasterDetailDto
+import net.konohana.sakuya.konopass.qr.enums.ReaderMode
 import net.konohana.sakuya.konopass.qr.infrastructure.entity.TReaderMasterEntity
 import net.konohana.sakuya.konopass.qr.infrastructure.entity.TReaderSettingsEntity
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TEntriesRepository
@@ -95,7 +96,7 @@ class ReaderMasterService(
 
         val initialSettings = TReaderSettingsEntity(
             readerId = readerId,
-            mode = "ENTRY",      // 初期モードをENTRYに固定
+            mode = ReaderMode.PREPARING.code,
             fromStaCode = "0000", // デフォルト値
             toStaCode = "0000",
             sectorKbn = "1"

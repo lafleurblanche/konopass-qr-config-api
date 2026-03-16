@@ -14,6 +14,8 @@ data class ReaderMasterDetailDto(
     // TReaderSettingsEntity からの情報
     val mode: String,
     val fromStaCode: String?,
+    val toStaCode: String?,
+    val sectorKbn: String?,
 
     // 共通情報
     val updatedAt: LocalDateTime

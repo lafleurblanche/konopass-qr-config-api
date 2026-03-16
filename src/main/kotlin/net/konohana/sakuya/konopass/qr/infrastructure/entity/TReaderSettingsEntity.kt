@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import net.konohana.sakuya.konopass.qr.enums.ReaderMode
 
 @Entity
 @Table(name = "t_reader_settings")
@@ -19,7 +20,7 @@ data class TReaderSettingsEntity(
     val readerId: String,
 
     @Column(name = "mode")
-    val mode: String, // 端末の動作モード (e.g., "ENTRY", "EXIT", "CONFIG")
+    val mode: String = ReaderMode.PREPARING.code,
 
     @Column(name = "from_sta_code")
     val fromStaCode: String,

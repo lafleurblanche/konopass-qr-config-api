@@ -1,5 +1,6 @@
 package net.konohana.sakuya.konopass.qr.infrastructure.initializer
 
+import net.konohana.sakuya.konopass.qr.enums.ReaderMode
 import net.konohana.sakuya.konopass.qr.infrastructure.entity.TReaderMasterEntity
 import net.konohana.sakuya.konopass.qr.infrastructure.entity.TReaderSettingsEntity
 import net.konohana.sakuya.konopass.qr.infrastructure.repository.TReaderMasterRepository
@@ -41,7 +42,7 @@ class DataInitializer(
         // 2. TReaderSettingsEntity のダミーデータ作成
         val settings1 = TReaderSettingsEntity(
             readerId = "RD-OP-001",
-            mode = "ENTRY",
+            mode = ReaderMode.ENTRY.code,
             fromStaCode = "TEST",
             toStaCode = "TEST", // Entityのプロパティ名に合わせる
             sectorKbn = "TST"
@@ -49,7 +50,7 @@ class DataInitializer(
 
         val settings2 = settings1.copy(
             readerId = "RD-OP-002",
-            mode = "EXIT",
+            mode = ReaderMode.EXIT.code,
             fromStaCode = "TEST",
             toStaCode = "TEST"
         )

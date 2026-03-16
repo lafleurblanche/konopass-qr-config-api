@@ -37,8 +37,10 @@ class ReaderMasterService(
             readerId = masterEntity.readerId,
             locationName = masterEntity.locationName,
             isActive = masterEntity.isActive,
-            mode = settingEntity?.mode ?: "UNKNOWN", // 設定がない場合はUNKNOWN
+            mode = settingEntity?.mode ?: "0", // 既にEnum化した場合は"0"等
             fromStaCode = settingEntity?.fromStaCode,
+            toStaCode = settingEntity?.toStaCode, // ★セット
+            sectorKbn = settingEntity?.sectorKbn, // ★セット
             updatedAt = masterEntity.updatedAt
         )
     }
@@ -48,16 +50,14 @@ class ReaderMasterService(
      * @param pageable ページ番号、ページサイズ、ソート情報を含むオブジェクト
      * @return ページングされた ReaderMasterDetailDto の Page オブジェクト
      */
+    /**
+     * 登録されている全端末の情報をページング付きで取得 (Read All)。
+     */
     fun getAllReaderDetails(pageable: Pageable): Page<ReaderMasterDetailDto> {
-        // 1. 全端末マスタ情報を取得 (Pageオブジェクトとして取得)
         val masterEntitiesPage: Page<TReaderMasterEntity> = masterRepository.findAll(pageable)
-
-        // 2. ページに含まれるエンティティのリストから、関連する設定情報を取得
-        //    (※ここでのN+1問題回避ロジックは複雑になるため、ここでは findAll() をそのまま利用する構造を維持)
-        val settingEntities = settingsRepository.findAll() // 簡略化のため全件取得を維持
+        val settingEntities = settingsRepository.findAll()
         val settingMap = settingEntities.associateBy { it.readerId }
 
-        // 3. Page内のコンテンツをDTOリストに変換し、新しい Page オブジェクトでラップして返却
         val dtoList = masterEntitiesPage.content.map { master ->
             val setting = settingMap[master.readerId]
             ReaderMasterDetailDto(
@@ -65,12 +65,12 @@ class ReaderMasterService(
                 locationName = master.locationName,
                 isActive = master.isActive,
                 updatedAt = master.updatedAt,
-                // 設定情報が存在しない場合はデフォルト値を使用
-                mode = setting?.mode ?: "未設定",
-                fromStaCode = setting?.fromStaCode
+                mode = setting?.mode ?: "0",
+                fromStaCode = setting?.fromStaCode,
+                toStaCode = setting?.toStaCode, // ★セット
+                sectorKbn = setting?.sectorKbn  // ★セット
             )
         }
-        // DTOリストを元の Page メタデータでラップして返す
         return PageImpl(dtoList, pageable, masterEntitiesPage.totalElements)
     }
 

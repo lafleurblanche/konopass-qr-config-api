@@ -16,12 +16,12 @@ class DataInitializer(
 ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
-        // すでにデータがある場合はスキップ（二重投入防止）
+        // すでにデータがある場合はスキップ
         if (masterRepository.count() > 0) return
 
         val now = LocalDateTime.now()
 
-        // 1. TReaderMasterEntity のダミーデータ作成
+        // 1. TReaderMasterEntity の作成
         val master1 = TReaderMasterEntity(
             readerId = "RD-OP-001",
             locationName = "試験駅01",
@@ -33,30 +33,32 @@ class DataInitializer(
 
         val master2 = master1.copy(
             readerId = "RD-OP-002",
-            locationName = "試験駅02",
-            isActive = true
+            locationName = "試験駅02"
         )
 
         masterRepository.saveAll(listOf(master1, master2))
 
-        // 2. TReaderSettingsEntity のダミーデータ作成
+        // 2. TReaderSettingsEntity の作成 (majorId を追加)
         val settings1 = TReaderSettingsEntity(
             readerId = "RD-OP-001",
+            majorId = "01",                   // ★ CERISIER
             mode = ReaderMode.ENTRY.code,
-            fromStaCode = "TEST",
-            toStaCode = "TEST", // Entityのプロパティ名に合わせる
-            sectorKbn = "TST"
+            fromStaCode = "FRNE0000",        // ★ 略称(NE)を含む形式
+            toStaCode = "TONE0000",
+            sectorKbn = "NE"                 // ★ 系統略称(NE)
         )
 
-        val settings2 = settings1.copy(
+        val settings2 = TReaderSettingsEntity(
             readerId = "RD-OP-002",
+            majorId = "02",                   // ★ NUAGE
             mode = ReaderMode.EXIT.code,
-            fromStaCode = "TEST",
-            toStaCode = "TEST"
+            fromStaCode = "FRNUT0000",       // ★ 略称(NUT)を含む形式
+            toStaCode = "TONUT0000",
+            sectorKbn = "NUT"                // ★ 系統略称(NUT)
         )
 
         settingsRepository.saveAll(listOf(settings1, settings2))
 
-        println("--- Dummy data has been initialized. ---")
+        println("--- Dummy data with MajorSystem has been initialized. ---")
     }
 }

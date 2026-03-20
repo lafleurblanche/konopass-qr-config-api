@@ -19,11 +19,10 @@ class TerminalConfigService(
         val updatedEntity = entity.copy(mode = newMode)
         val savedEntity = settingsRepository.save(updatedEntity)
 
-        // ★ 元の名称 TReaderSettingData で返却
         return TReaderSettingData(
             id = savedEntity.id,
             readerId = savedEntity.readerId,
-            majorId = savedEntity.majorId, // 追加分
+            majorId = savedEntity.majorId,
             mode = savedEntity.mode,
             fromStaCode = savedEntity.fromStaCode,
             toStaCode = savedEntity.toStaCode,

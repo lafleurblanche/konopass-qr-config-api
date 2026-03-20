@@ -19,7 +19,7 @@ data class TReaderSettingsEntity(
     @Column(name = "reader_id")
     val readerId: String,
 
-    @Column(name = "major_id") // ★ 追加: 大系統ID (01, 02...)
+    @Column(name = "major_id")
     val majorId: String,
 
     @Column(name = "mode")
@@ -31,6 +31,6 @@ data class TReaderSettingsEntity(
     @Column(name = "to_sta_code")
     val toStaCode: String,
 
-    @Column(name = "sector_kbn") // ここを「小系統（NE, PRIなど）」として扱う
+    @Column(name = "sector_kbn")
     val sectorKbn: String,
 )

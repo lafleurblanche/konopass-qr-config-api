@@ -6,9 +6,9 @@ package net.konohana.sakuya.konopass.qr.infrastructure.entity.dto
 data class TReaderSettingData(
     val id: Int?,
     val readerId: String?,
-    val majorId: String?,   // ★ 元の名称を踏襲しつつ、必要な項目のみ追加
+    val majorId: String?,
     val mode: String?,
     val fromStaCode: String?,
     val toStaCode: String?,
-    val sectorKbn: String?  // これが小系統(略称)
+    val sectorKbn: String?
 )

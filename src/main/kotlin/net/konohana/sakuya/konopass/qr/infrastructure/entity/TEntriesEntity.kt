@@ -35,6 +35,6 @@ data class TEntriesEntity(
     val exitDate: LocalDateTime?,
 
     @Column(name = "status")
-    val status: String, // IN_USE, COMPLETED などの状態
+    val status: String,
 
 )

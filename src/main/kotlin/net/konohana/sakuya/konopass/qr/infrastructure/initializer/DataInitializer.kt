@@ -41,20 +41,20 @@ class DataInitializer(
         // 2. TReaderSettingsEntity の作成 (majorId を追加)
         val settings1 = TReaderSettingsEntity(
             readerId = "RD-OP-001",
-            majorId = "01",                   // ★ CERISIER
+            majorId = "01",
             mode = ReaderMode.ENTRY.code,
-            fromStaCode = "FRNE0000",        // ★ 略称(NE)を含む形式
+            fromStaCode = "FRNE0000",
             toStaCode = "TONE0000",
-            sectorKbn = "NE"                 // ★ 系統略称(NE)
+            sectorKbn = "NE"
         )
 
         val settings2 = TReaderSettingsEntity(
             readerId = "RD-OP-002",
-            majorId = "02",                   // ★ NUAGE
+            majorId = "02",
             mode = ReaderMode.EXIT.code,
-            fromStaCode = "FRNUT0000",       // ★ 略称(NUT)を含む形式
+            fromStaCode = "FRNUT0000",
             toStaCode = "TONUT0000",
-            sectorKbn = "NUT"                // ★ 系統略称(NUT)
+            sectorKbn = "NUT"
         )
 
         settingsRepository.saveAll(listOf(settings1, settings2))

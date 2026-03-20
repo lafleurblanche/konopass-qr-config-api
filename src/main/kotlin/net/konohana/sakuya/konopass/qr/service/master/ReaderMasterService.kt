@@ -38,6 +38,7 @@ class ReaderMasterService(
             locationName = masterEntity.locationName,
             isActive = masterEntity.isActive,
             mode = settingEntity?.mode ?: "0",
+            majorId = settingEntity?.majorId,
             fromStaCode = settingEntity?.fromStaCode,
             toStaCode = settingEntity?.toStaCode,
             sectorKbn = settingEntity?.sectorKbn,
@@ -66,6 +67,7 @@ class ReaderMasterService(
                 isActive = master.isActive,
                 updatedAt = master.updatedAt,
                 mode = setting?.mode ?: "0",
+                majorId = setting?.majorId,
                 fromStaCode = setting?.fromStaCode,
                 toStaCode = setting?.toStaCode,
                 sectorKbn = setting?.sectorKbn

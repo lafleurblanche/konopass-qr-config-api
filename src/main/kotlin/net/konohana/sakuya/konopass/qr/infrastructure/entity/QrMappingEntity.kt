@@ -25,7 +25,6 @@ data class QrMappingEntity(
     @Column(name = "sector_kbn")
     val sectorKbn: String,
 
-    // DBにはStringで格納されている利用ステータス (VALID, IN_USEなど)
     @Column(name = "status")
     val status: String,
 

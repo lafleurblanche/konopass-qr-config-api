@@ -2,6 +2,7 @@ package net.konohana.sakuya.konopass.qr.controller
 
 import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderMasterCreateRequest
 import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderMasterUpdateRequest
+import net.konohana.sakuya.konopass.qr.domain.dtos.ReaderSettingsUpdateRequest
 import net.konohana.sakuya.konopass.qr.service.master.ReaderMasterService
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -106,6 +107,30 @@ class ReaderMasterController(
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to e.message))
         } catch (e: Exception) {
             ResponseEntity.internalServerError().body(mapOf("error" to "更新中にエラーが発生しました。"))
+        }
+    }
+
+    /**
+     * 6. 運用パラメータ（設定情報）のみを更新 (U)
+     * PUT /api/v1/master/reader/{readerId}/settings
+     */
+    @PutMapping("/{readerId}/settings")
+    fun updateReaderSettings(
+        @PathVariable readerId: String,
+        @RequestBody request: ReaderSettingsUpdateRequest
+    ): ResponseEntity<*> {
+        return try {
+            val updatedDetails = masterService.updateReaderSettings(
+                readerId = readerId,
+                fromStaCode = request.fromStaCode,
+                toStaCode = request.toStaCode,
+                sectorKbn = request.sectorKbn
+            )
+            ResponseEntity.ok(updatedDetails)
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(mapOf("error" to "設定の更新中にエラーが発生しました。"))
         }
     }
 }

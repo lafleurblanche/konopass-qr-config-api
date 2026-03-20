@@ -37,10 +37,10 @@ class ReaderMasterService(
             readerId = masterEntity.readerId,
             locationName = masterEntity.locationName,
             isActive = masterEntity.isActive,
-            mode = settingEntity?.mode ?: "0", // 既にEnum化した場合は"0"等
+            mode = settingEntity?.mode ?: "0",
             fromStaCode = settingEntity?.fromStaCode,
-            toStaCode = settingEntity?.toStaCode, // ★セット
-            sectorKbn = settingEntity?.sectorKbn, // ★セット
+            toStaCode = settingEntity?.toStaCode,
+            sectorKbn = settingEntity?.sectorKbn,
             updatedAt = masterEntity.updatedAt
         )
     }
@@ -67,8 +67,8 @@ class ReaderMasterService(
                 updatedAt = master.updatedAt,
                 mode = setting?.mode ?: "0",
                 fromStaCode = setting?.fromStaCode,
-                toStaCode = setting?.toStaCode, // ★セット
-                sectorKbn = setting?.sectorKbn  // ★セット
+                toStaCode = setting?.toStaCode,
+                sectorKbn = setting?.sectorKbn
             )
         }
         return PageImpl(dtoList, pageable, masterEntitiesPage.totalElements)
@@ -97,11 +97,11 @@ class ReaderMasterService(
         // 新規登録時は「未設定・準備中」の状態を明示する
         val initialSettings = TReaderSettingsEntity(
             readerId = readerId,
-            majorId = "00",               // ★「未設定(NONE/OFFICE)」用のダミーID
+            majorId = "00",
             mode = ReaderMode.PREPARING.code,
-            fromStaCode = "0000",         // プレフィックス(FR/TO)すら付いていない状態
+            fromStaCode = "0000",
             toStaCode = "0000",
-            sectorKbn = "NONE"            // 小系統も未定
+            sectorKbn = "NONE"
         )
         settingsRepository.save(initialSettings)
 

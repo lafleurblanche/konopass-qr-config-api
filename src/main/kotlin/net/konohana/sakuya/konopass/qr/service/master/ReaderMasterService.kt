@@ -94,12 +94,14 @@ class ReaderMasterService(
         )
         val savedEntity = masterRepository.save(newEntity)
 
+        // 新規登録時は「未設定・準備中」の状態を明示する
         val initialSettings = TReaderSettingsEntity(
             readerId = readerId,
+            majorId = "00",               // ★「未設定(NONE/OFFICE)」用のダミーID
             mode = ReaderMode.PREPARING.code,
-            fromStaCode = "0000", // デフォルト値
+            fromStaCode = "0000",         // プレフィックス(FR/TO)すら付いていない状態
             toStaCode = "0000",
-            sectorKbn = "1"
+            sectorKbn = "NONE"            // 小系統も未定
         )
         settingsRepository.save(initialSettings)
 
@@ -193,6 +195,33 @@ class ReaderMasterService(
         }
 
         // 3. 最新の状態を統合DTOとして返却
+        return getReaderDetails(readerId)
+    }
+
+    @Transactional
+    fun updateReaderSettings(
+        readerId: String,
+        fromStaCode: String,
+        toStaCode: String,
+        sectorKbn: String
+    ): ReaderMasterDetailDto {
+        // 設定情報の取得
+        val settingEntity = settingsRepository.findByReaderId(readerId)
+            ?: throw NoSuchElementException("端末ID '$readerId' の設定情報が見つかりません。")
+
+        // 設定情報の更新
+        val updatedSetting = settingEntity.copy(
+            fromStaCode = fromStaCode,
+            toStaCode = toStaCode,
+            sectorKbn = sectorKbn
+        )
+        settingsRepository.save(updatedSetting)
+
+        // マスタ側の更新日時も更新しておく（任意）
+        masterRepository.findByReaderId(readerId)?.let {
+            masterRepository.save(it.copy(updatedAt = LocalDateTime.now()))
+        }
+
         return getReaderDetails(readerId)
     }
 }

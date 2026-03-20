@@ -15,18 +15,16 @@ class TerminalConfigService(
         val entity = settingsRepository.findByReaderId(readerId)
             ?: throw NoSuchElementException("リーダーID '$readerId' の設定が見つかりません。")
 
-        // 1. エンティティを更新
-        // entity.mode = newMode // JPAの更新処理 (SetterまたはCopyで)
+        // エンティティの更新
         val updatedEntity = entity.copy(mode = newMode)
-
-        // 2. DBに保存
         val savedEntity = settingsRepository.save(updatedEntity)
 
-        // 3. DTOに変換して返却
+        // ★ 元の名称 TReaderSettingData で返却
         return TReaderSettingData(
             id = savedEntity.id,
-            mode = savedEntity.mode,
             readerId = savedEntity.readerId,
+            majorId = savedEntity.majorId, // 追加分
+            mode = savedEntity.mode,
             fromStaCode = savedEntity.fromStaCode,
             toStaCode = savedEntity.toStaCode,
             sectorKbn = savedEntity.sectorKbn
